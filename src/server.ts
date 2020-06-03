@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { ApolloServer } from "apollo-server-express";
 import depthLimit from "graphql-depth-limit";
 import { createServer } from "http";
@@ -15,9 +15,13 @@ const server = new ApolloServer({
 app.use("*", cors());
 app.use(compression());
 
-server.applyMiddleware({ app, path: "/graphql" });
+app.get("/", (req: Request, res: Response) => {
+  res.send("404 - Não encontrado.");
+});
+
+server.applyMiddleware({ app, path: "/api" });
 const httpServer = createServer(app);
 
 httpServer.listen({ port: 3000 }, (): void =>
-  console.log(`GraphQL is now running on http://localhost:3000/graphql`)
+  console.log(`[server online] http://localhost:3000${server.graphqlPath}`)
 );
